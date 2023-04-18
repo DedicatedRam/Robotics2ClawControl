@@ -1,10 +1,20 @@
 #include <Servo.h>
-#include <LeapC.h>
 Servo base;
 Servo claw;
 Servo up_down;
 Servo front_back;
 int randomNum;
+int clawUpperBound = 155;
+int clawLowerBound = 0;
+int armHeightUpperBound = 155;
+int armHeightLowerBound = 0;
+int forwardbackUpperBound = 170;
+int forwardbackLowerBound = 0;
+int leftrightUpperBound = 150;
+int leftrightLowerBound = 0;
+
+
+
 
 void setup() {
   Serial.begin(9600);
@@ -87,29 +97,61 @@ void loop() {
             break;
         }
         break;
-      case 'w': // Move up/down
-        up_down.write(up_down.read() + 5);
+      case 'w': 
+        if(up_down.read()>= forwardbackUpperBound){
+          Serial.println("This arm cannot go any more forward");          
+        }else{
+          up_down.write(up_down.read() + 5);
+        }
         break;
       case 's':
-        up_down.write(up_down.read() - 5);
+        if(up_down.read()<=forwardbackLowerBound){
+          Serial.println("This arm cannot go any more backward");
+        }else{
+          up_down.write(up_down.read() - 5);          
+        }
         break;
-      case 'a': // Move front/back
-        front_back.write(front_back.read() + 5);
+      case 'a': 
+        if(front_back.read()>= leftrightUpperBound){
+          Serial.println("This arm cannot rotate anti-clockwise anymore");
+        } else{
+          front_back.write(front_back.read() + 5);
+        }
         break;
       case 'd':
-        front_back.write(front_back.read() - 5);
+        if(front_back.read()<=leftrightLowerBound){
+          Serial.println("This arm cannot rotate clockwise anymore");
+        }else{
+          front_back.write(front_back.read() - 5);
+        }
         break;
-      case 'q': // Rotate base
-        base.write(base.read() + 5);
+      case 'q': 
+        if(base.read()>=armHeightUpperBound){
+          Serial.println("The arm cannot ascend any more");
+        }else{
+          base.write(base.read() + 5);
+        }
         break;
       case 'e':
-        base.write(base.read() - 5);
+        if(base.read()<=armHeightLowerBound){
+          Serial.println("The arm cannot descend any more");
+        }else{
+          base.write(base.read() - 5);
+        }
         break;
-      case 'z': // Open/close claw
-        claw.write(claw.read() + 5);
+      case 'z': 
+        if(claw.read()>=clawUpperBound){
+          Serial.println("The claw cannot close any further");
+        }else{
+          claw.write(claw.read() + 5);
+        }
         break;
       case 'x':
-        claw.write(claw.read() - 5);
+        if(claw.read()<=clawLowerBound){
+          Serial.println("The claw cannot open any further");
+        }else{
+          claw.write(claw.read() - 5);
+        }
         break;
       case '#':
         Serial.print("Claw: ");
